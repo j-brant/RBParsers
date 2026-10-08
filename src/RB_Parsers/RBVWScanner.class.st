@@ -1,37 +1,27 @@
 Class {
-	#name : #RBVWScanner,
-	#superclass : #RBScanner,
-	#category : #'RB_Parsers'
+	#name : 'RBVWScanner',
+	#superclass : 'OCScanner',
+	#category : 'RB_Parsers',
+	#package : 'RB_Parsers'
 }
 
-{ #category : #'private - scanning' }
+{ #category : 'private - scanning' }
 RBVWScanner >> scanIdentifierOrKeyword [
 	| name |
 	self scanName.
 	currentCharacter == $.
 		ifTrue: [ self scanNameSpaceName ifNotNil: [ :token | ^ token ] ].
 	(currentCharacter = $: and: [ stream peek ~= $= ])
-		ifTrue: [ ^ self scanKeyword ].
+		ifTrue: [ buffer nextPut: currentCharacter.
+			self step.
+			name := buffer contents.
+			^ OCKeywordToken value: name start: tokenStart ].
 	name := buffer contents.
-	name = 'true'
-		ifTrue: [ ^ RBLiteralToken
-				value: true
-				start: tokenStart
-				stop: self previousStepPosition ].
-	name = 'false'
-		ifTrue: [ ^ RBLiteralToken
-				value: false
-				start: tokenStart
-				stop: self previousStepPosition ].
-	name = 'nil'
-		ifTrue: [ ^ RBLiteralToken
-				value: nil
-				start: tokenStart
-				stop: self previousStepPosition ].
-	^ RBIdentifierToken value: name start: tokenStart
+	(self scanNamedLiteral: name) ifNotNil: [ :token | ^ token ].
+	^ OCIdentifierToken value: name start: tokenStart
 ]
 
-{ #category : #'private - scanning' }
+{ #category : 'private - scanning' }
 RBVWScanner >> scanLiteral [
 	self step.
 	self stripSeparators.
@@ -45,7 +35,7 @@ RBVWScanner >> scanLiteral [
 	^ (self scanError: 'Expecting a literal type') value: '#'
 ]
 
-{ #category : #'private - scanning' }
+{ #category : 'private - scanning' }
 RBVWScanner >> scanNameSpaceName [
 	(stream atEnd or: [ (self classify: stream peek) ~~ #alphabetic ])
 		ifTrue: [ ^ nil ].
@@ -53,21 +43,21 @@ RBVWScanner >> scanNameSpaceName [
 	self step.
 	self scanName.
 	currentCharacter == $. ifTrue: [ self scanNameSpaceName ].
-	^ RBIdentifierToken value: buffer contents start: tokenStart
+	^ OCIdentifierToken value: buffer contents start: tokenStart
 ]
 
-{ #category : #'private - scanning' }
+{ #category : 'private - scanning' }
 RBVWScanner >> scanQualifiedReference [
 	| nameToken |
 	self step.	"{"
 	self stripSeparators.
 	nameToken := self scanIdentifierOrKeyword.
-	(nameToken isIdentifier and: [nameToken value notEmpty]) 
-		ifFalse: [self scannerError: 'Invalid name in qualified reference'].
+	(nameToken isIdentifier and: [ nameToken value notEmpty ])
+		ifFalse: [ self scanError: 'Invalid name in qualified reference' ].
 	self stripSeparators.
-	currentCharacter == $} ifFalse: [self scannerError: '} expected'].
+	currentCharacter == $} ifFalse: [ self scanError: '} expected' ].
 	self step.	"}"
-	^RBLiteralToken 
+	^ OCLiteralToken
 		value: (RBQualifiedName pathString: nameToken value)
 		start: tokenStart
 		stop: self previousStepPosition

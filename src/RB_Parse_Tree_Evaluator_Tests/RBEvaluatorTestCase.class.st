@@ -1,16 +1,17 @@
 Class {
-	#name : #RBEvaluatorTestCase,
-	#superclass : #TestCase,
+	#name : 'RBEvaluatorTestCase',
+	#superclass : 'TestCase',
 	#classVars : [
 		'ClassVariable'
 	],
-	#category : #'RB_Parse_Tree_Evaluator_Tests'
+	#category : 'RB_Parse_Tree_Evaluator_Tests',
+	#package : 'RB_Parse_Tree_Evaluator_Tests'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testArgumentCount [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'self should: [[] argumentCount = 0].
 								self should: [[:a | ] argumentCount = 1].
@@ -19,27 +20,27 @@ RBEvaluatorTestCase >> testArgumentCount [
 	self assert: (RBEvaluator evaluate: parseTree for: self)
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testBlocks [
 	| parseTree |
-	parseTree := RBParser parseExpression: '[:each | each * each]'.
+	parseTree := OCParser parseExpression: '[:each | each * each]'.
 	self
 		assert:
 			((1 to: 3) collect: (RBEvaluator evaluate: parseTree)) = #(1 4 9).
-	parseTree := RBParser parseExpression: '[:a :b | a + b]'.
+	parseTree := OCParser parseExpression: '[:a :b | a + b]'.
 	self
 		assert:
 			((1 to: 3) inject: 0 into: (RBEvaluator evaluate: parseTree)) = 6.
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'[:a :b :c | a + b + c] value: 1 value: 2 value: 3'.
 	self assert: (RBEvaluator evaluate: parseTree) = 6
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testCapturedContexts [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| blocks |
 					blocks := OrderedCollection new.
@@ -48,78 +49,78 @@ RBEvaluatorTestCase >> testCapturedContexts [
 	self assert: (RBEvaluator evaluate: parseTree for: 1) = 55
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testCascadedMessage [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression: '1 * 2; printString; yourself; printString'.
 	self assert: (RBEvaluator evaluate: parseTree) = '1'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testClassAccess [
 	| parseTree |
-	parseTree := RBParser parseExpression: 'String new'.
+	parseTree := OCParser parseExpression: 'String new'.
 	self assert: (RBEvaluator evaluate: parseTree) = ''
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testClassVariableAccess [
 	| parseTree |
 	ClassVariable := 2.
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression: 'ClassVariable := ClassVariable * 2'.
 	RBEvaluator evaluate: parseTree for: self.
 	self assert: ClassVariable = 4
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testDoesNotUnderstand [
 	| parseTree |
 	ClassVariable := 2.
-	parseTree := RBParser parseExpression: '3 zork'.
+	parseTree := OCParser parseExpression: '3 zork'.
 	self
 		should: [ RBEvaluator evaluate: parseTree for: self ]
 		raise: MessageNotUnderstood
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testEmptyBlock [
 	| parseTree |
-	parseTree := RBParser parseExpression: '[] value'.
+	parseTree := OCParser parseExpression: '[] value'.
 	self assert: (RBEvaluator evaluate: parseTree for: 1) isNil
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testEmptySequence [
 	| parseTree |
-	parseTree := RBParser parseExpression: ''.
+	parseTree := OCParser parseExpression: ''.
 	self assert: (RBEvaluator evaluate: parseTree for: 1) isNil
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testEnsure [
 	| parseTree |
 	ClassVariable := false.
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression: '[^self] ensure: [ClassVariable := true]'.
 	RBEvaluator evaluate: parseTree for: self.
 	self assert: ClassVariable
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testExceptionHandling [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'[Notification raiseSignal + 4] on: Exception do: [:signal | signal resume: 4]'.
 	self assert: (RBEvaluator evaluate: parseTree for: self) = 8
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testFork [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| semaphore x |
 			semaphore := Semaphore new.
@@ -130,10 +131,10 @@ RBEvaluatorTestCase >> testFork [
 	self assert: (RBEvaluator evaluate: parseTree for: self) = 25
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testForkAt [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| semaphore x |
 			semaphore := Semaphore new.
@@ -144,57 +145,57 @@ RBEvaluatorTestCase >> testForkAt [
 	self assert: (RBEvaluator evaluate: parseTree for: self) = 25
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testIfCurtailed [
 	| parseTree |
 	ClassVariable := false.
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression: '[^self] ifCurtailed: [ClassVariable := true]'.
 	RBEvaluator evaluate: parseTree for: self.
 	self assert: ClassVariable
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testIfCurtailedNot [
 	| parseTree |
 	ClassVariable := false.
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression: '[self] ifCurtailed: [ClassVariable := true]'.
 	RBEvaluator evaluate: parseTree for: self.
 	self deny: ClassVariable
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testInstanceVariableAccess [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression: 'stop to: start by: step negated'.
 	self
 		assert:
 			(RBEvaluator evaluate: parseTree for: (1 to: 3)) = (3 to: 1 by: -1)
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testInstanceVariableAssignment [
 	| parseTree |
-	parseTree := RBParser parseExpression: 'stop := 2. self'.
+	parseTree := OCParser parseExpression: 'stop := 2. self'.
 	self
 		assert:
 			(RBEvaluator evaluate: parseTree for: (1 to: 3)) = (1 to: 2)
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testLiterals [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression: '#(1 2 3) collect: [:each | each * each]'.
 	self assert: (RBEvaluator evaluate: parseTree) = #(1 4 9)
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testNewProcess [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| semaphore x |
 			semaphore := Semaphore new.
@@ -205,10 +206,10 @@ RBEvaluatorTestCase >> testNewProcess [
 	self assert: (RBEvaluator evaluate: parseTree for: self) = 25
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testNewProcessWithArguments [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| semaphore x |
 			semaphore := Semaphore new.
@@ -219,10 +220,10 @@ RBEvaluatorTestCase >> testNewProcessWithArguments [
 	self assert: (RBEvaluator evaluate: parseTree for: self) = 25
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testNoReturnInMethod [
 	| parseTree object |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseMethod:
 			'someMethod
 					self printString'.
@@ -232,10 +233,10 @@ RBEvaluatorTestCase >> testNoReturnInMethod [
 			(RBEvaluator evaluateMethod: parseTree for: object) = object
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testNoVariableFound [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'
 					self ifTrue: [| y | y := 2].
@@ -245,19 +246,19 @@ RBEvaluatorTestCase >> testNoVariableFound [
 		raise: Error
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testPoolVariableAccess [
 	| parseTree |
-	parseTree := RBParser parseExpression: 'WindowSize'.
+	parseTree := OCParser parseExpression: 'WindowSize'.
 	self
 		assert:
 			(RBEvaluator evaluate: parseTree for: DeflateStream basicNew) = 32768
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testRepeat [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| x |
 			x := 1.
@@ -266,20 +267,20 @@ RBEvaluatorTestCase >> testRepeat [
 	self assert: (RBEvaluator evaluate: parseTree) = 10
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testReturnInBlockExpression [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'self do: [:each | each = 2 ifTrue: [^each]].
 								self error: ''not found'''.
 	self assert: (RBEvaluator evaluate: parseTree for: (1 to: 3)) = 2
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testReturnInBlockMethod [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseMethod:
 			'findTwo
 			self do: [:each | each = 2 ifTrue: [^each]].
@@ -293,10 +294,10 @@ RBEvaluatorTestCase >> testReturnInBlockMethod [
 				arguments: #()) = 2
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testSeparateTemporaries [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| captured |
 				captured := [| x | x := 5. [x]] value.
@@ -305,28 +306,28 @@ RBEvaluatorTestCase >> testSeparateTemporaries [
 	self assert: (RBEvaluator evaluate: parseTree for: 1) = 5
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testSquared [
 	| parseTree |
-	parseTree := RBParser parseExpression: '| x | x := 12 * 12. ^x'.
+	parseTree := OCParser parseExpression: '| x | x := 12 * 12. ^x'.
 	self assert: (RBEvaluator evaluate: parseTree) = 144
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testSuperDoesNotUnderstand [
 	| parseTree |
 	ClassVariable := 2.
-	parseTree := RBParser parseExpression: 'super * self'.
+	parseTree := OCParser parseExpression: 'super * self'.
 	self
 		should:
 			[ RBEvaluator evaluate: parseTree for: 2 inClass: Magnitude ]
 		raise: MessageNotUnderstood
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testSuperSends [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| stream |
 			stream := WriteStream on: String new.
@@ -338,17 +339,17 @@ RBEvaluatorTestCase >> testSuperSends [
 				= 'a SmallInteger'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testWhileFalse [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| x |
 			x := 1.
 			[x >= 10] whileFalse: [x := x + 1].
 			x'.
 	self assert: (RBEvaluator evaluate: parseTree) = 10.
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| x |
 			x := 1.
@@ -357,17 +358,17 @@ RBEvaluatorTestCase >> testWhileFalse [
 	self assert: (RBEvaluator evaluate: parseTree) = 10
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 RBEvaluatorTestCase >> testWhileTrue [
 	| parseTree |
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| x |
 			x := 1.
 			[x < 10] whileTrue: [x := x + 1].
 			x'.
 	self assert: (RBEvaluator evaluate: parseTree) = 10.
-	parseTree := RBParser
+	parseTree := OCParser
 		parseExpression:
 			'| x |
 			x := 1.

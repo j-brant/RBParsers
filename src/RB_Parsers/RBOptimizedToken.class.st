@@ -1,15 +1,16 @@
 Class {
-	#name : #RBOptimizedToken,
-	#superclass : #RBToken,
-	#category : #'RB_Parsers'
+	#name : 'RBOptimizedToken',
+	#superclass : 'OCToken',
+	#category : 'RB_Parsers',
+	#package : 'RB_Parsers'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 RBOptimizedToken >> isOptimized [
 	^true
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedToken >> length [
 	^3
 ]

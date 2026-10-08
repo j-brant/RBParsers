@@ -1,30 +1,31 @@
 Class {
-	#name : #RBQualifiedName,
-	#superclass : #Object,
+	#name : 'RBQualifiedName',
+	#superclass : 'Object',
 	#instVars : [
 		'pathString'
 	],
-	#category : #'RB_Parsers'
+	#category : 'RB_Parsers',
+	#package : 'RB_Parsers'
 }
 
-{ #category : #'private - scanning' }
+{ #category : 'private - scanning' }
 RBQualifiedName class >> pathString: aString [
 	^ self new
 		pathString: aString;
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBQualifiedName >> pathString [
 	^ pathString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBQualifiedName >> pathString: anObject [
 	pathString := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBQualifiedName >> storeOn: aStream [
 	aStream
 		nextPutAll: '#{';

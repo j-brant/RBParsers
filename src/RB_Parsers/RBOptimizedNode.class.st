@@ -1,22 +1,23 @@
 Class {
-	#name : #RBOptimizedNode,
-	#superclass : #RBValueNode,
+	#name : 'RBOptimizedNode',
+	#superclass : 'OCValueNode',
 	#instVars : [
 		'left',
 		'right',
 		'body'
 	],
-	#category : #'RB_Parsers'
+	#category : 'RB_Parsers',
+	#package : 'RB_Parsers'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 RBOptimizedNode class >> body: aSequenceNode [
 	^(self new)
 		body: aSequenceNode;
 		yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 RBOptimizedNode class >> left: leftInteger body: aSequenceNode right: rightInteger [
 	^(self new)
 		left: leftInteger
@@ -25,95 +26,95 @@ RBOptimizedNode class >> left: leftInteger body: aSequenceNode right: rightInteg
 		yourself
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 RBOptimizedNode >> = anObject [
 	^self == anObject or: [self class = anObject class and: [self body = anObject body]]
 ]
 
-{ #category : #visitor }
+{ #category : 'visitor' }
 RBOptimizedNode >> acceptVisitor: aProgramNodeVisitor [
 	^aProgramNodeVisitor visitOptimizedNode: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedNode >> arguments [
 	^#()
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedNode >> body [
 	^body
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedNode >> body: stmtsNode [
 	body := stmtsNode.
 	body parent: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedNode >> children [
 	^Array with: body
 ]
 
-{ #category : #matching }
+{ #category : 'matching' }
 RBOptimizedNode >> copyInContext: aDictionary [
 	^self class body: (body copyInContext: aDictionary)
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 RBOptimizedNode >> equalTo: anObject withMapping: aDictionary [
 	^self class = anObject class and: [self body equalTo: anObject body withMapping: aDictionary]
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 RBOptimizedNode >> hash [
 	^self body hash
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 RBOptimizedNode >> isFaulty [
 	^ body isFaulty
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 RBOptimizedNode >> isImmediateNode [
 	^true
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 RBOptimizedNode >> left: leftInteger body: aSequenceNode right: rightInteger [
 	left := leftInteger.
 	self body: aSequenceNode.
 	right := rightInteger
 ]
 
-{ #category : #matching }
+{ #category : 'matching' }
 RBOptimizedNode >> match: aNode inContext: aDictionary [
 	^aNode class == self class and: [body match: aNode body inContext: aDictionary]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 RBOptimizedNode >> needsParenthesis [
 	^false
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedNode >> precedence [
 	^0
 ]
 
-{ #category : #replacing }
+{ #category : 'replacing' }
 RBOptimizedNode >> replaceNode: aNode withNode: anotherNode [
 	body == aNode ifTrue: [self body: anotherNode]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedNode >> startWithoutParentheses [
 	^left
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBOptimizedNode >> stopWithoutParentheses [
 	^right
 ]

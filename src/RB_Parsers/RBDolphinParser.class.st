@@ -1,10 +1,11 @@
 Class {
-	#name : #RBDolphinParser,
-	#superclass : #RBOptimizedParser,
-	#category : #'RB_Parsers'
+	#name : 'RBDolphinParser',
+	#superclass : 'RBOptimizedParser',
+	#category : 'RB_Parsers',
+	#package : 'RB_Parsers'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 RBDolphinParser >> scannerClass [
-	^RBOptimizedScanner
+	^ RBOptimizedScanner
 ]
